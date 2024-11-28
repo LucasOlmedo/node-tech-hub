@@ -12,7 +12,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
-sequelize.sync()
+sequelize.sync({ force: true })
   .then(() => {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {

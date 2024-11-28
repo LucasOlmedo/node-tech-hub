@@ -29,12 +29,47 @@ const authController = {
                     expiresIn: '1h'
                 }
             );
-            res.status(200).json({ token: token });
+
+            const refreshToken = jwt.sign(
+                {
+                    id: user.id,
+                    email: user.email
+                },
+                process.env.JWT_REFRESH_SECRET,
+                {
+                    expiresIn: '1d'
+                }
+            );
+
+            user.refreshToken = refreshToken;
+            await user.save();
+
+            res.status(200).json({ token: token, refreshToken: refreshToken });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Unable to login' });
         }
     },
+
+    refresh: async (req, res) => {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(400).json({ message: 'Missing refresh token' });
+        }
+
+        try {
+            const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+            const user = await User.findByPk(decoded.id);
+
+            if (!user || user.refreshToken !== refreshToken) {
+                return res.status(401).json({ message: 'Invalid refresh token' });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(401).json({ message: 'Invalid refresh token' });
+        }
+    }
 };
 
 module.exports = authController;
