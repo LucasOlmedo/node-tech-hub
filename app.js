@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv-flow").config();
 
 const express = require("express");
 const sequelize = require("./config/database");
@@ -12,11 +12,11 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
-sequelize.sync({ force: true })
+sequelize.sync()
   .then(() => {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
-      console.log(`Server running at http://localhost:${PORT}`);
+      console.log(`Server running at http://localhost:${PORT} 🚀 - Env: ${process.env.NODE_ENV}`);
     });
   })
   .catch((error) => console.error("Unable to sync the database:", error));

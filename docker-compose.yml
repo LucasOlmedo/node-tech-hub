@@ -9,8 +9,8 @@ services:
     networks:
       - app-network
     command: ["npm", "start"]
-    env_file:
-      - .env
+    environment:
+      NODE_ENV: development
 
 networks:
   app-network:
