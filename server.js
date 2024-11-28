@@ -3,6 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const joi = require('joi');
 
+const sequelize = require('./config/database');
+const User = require('./models/User');
+
 const app = express();
 
 app.use(express.json());
@@ -44,6 +47,13 @@ app.post('/register', (req, res) => {
     }
 
     res.send(`Username: ${value.username}, Email: ${value.email}, Password: ${value.password}`);
+});
+
+// Sync DB
+sequelize.sync({ force: false }).then(() => {
+    console.log('Database synchronized');
+}).catch((error) => {
+    console.error('Unable to sync the database:', error);
 });
 
 // Server Running

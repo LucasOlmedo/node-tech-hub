@@ -1,12 +1,20 @@
-const http = require('http');
+require("dotenv").config();
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello, World!\n');
-});
+const express = require("express");
+const sequelize = require("./config/database");
+const userRoutes = require("./routes/userRoutes");
 
-const PORT = 3000;
-server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}/`);
-});
+const app = express();
+
+app.use(express.json());
+
+app.use("/api/users", userRoutes);
+
+sequelize.sync()
+  .then(() => {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}`);
+    });
+  })
+  .catch((error) => console.error("Unable to sync the database:", error));
