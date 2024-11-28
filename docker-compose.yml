@@ -1,0 +1,15 @@
+services:
+  node:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    command: ["npm", "start"]
+
+networks:
+  app-network:
+    driver: bridge
