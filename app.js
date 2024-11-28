@@ -3,11 +3,13 @@ require("dotenv").config();
 const express = require("express");
 const sequelize = require("./config/database");
 const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
 app.use(express.json());
 
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
 sequelize.sync()
