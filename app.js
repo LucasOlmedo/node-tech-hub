@@ -18,3 +18,11 @@ sequelize.sync()
     });
   })
   .catch((error) => console.error("Unable to sync the database:", error));
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: "Something went wrong",
+    details: err.message
+  });
+});

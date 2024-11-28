@@ -1,5 +1,3 @@
-const joi = require('joi');
-
 const User = require('../models/User');
 
 const userController = {
@@ -15,24 +13,8 @@ const userController = {
 
     create: async (req, res) => {
 
-        const userSchema = joi.object({
-            name: joi.string().required(),
-            email: joi.string().email().required(),
-            password: joi.string().required(),
-        });
-
-        const { error, value } = userSchema.validate(req.body, { abortEarly: false });
-
-        if (error) {
-            return res.status(400)
-                .json({
-                    message: 'Validation failed',
-                    errors: error.details.map((err) => err.message),
-                });
-        }
-
         try {
-            const user = await User.create(value);
+            const user = await User.create(req.body);
             res.status(201).json(user);
         } catch (error) {
             res.status(500).json({ message: 'Unable to create user', error: error.message });
@@ -53,22 +35,6 @@ const userController = {
     },
 
     update: async (req, res) => {
-
-        const userSchema = joi.object({
-            name: joi.string().required(),
-            email: joi.string().email().required(),
-            password: joi.string().required(),
-        });
-
-        const { error, value } = userSchema.validate(req.body, { abortEarly: false });
-
-        if (error) {
-            return res.status(400)
-                .json({
-                    message: 'Validation failed',
-                    errors: error.details.map((err) => err.message),
-                });
-        }
 
         try {
             const user = await User.findByPk(req.params.id);
