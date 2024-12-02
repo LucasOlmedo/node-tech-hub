@@ -21,13 +21,13 @@ const userController = {
         }
     },
 
-    find: async (req, res) => {
+    find: async (req, res, next) => {
         try {
             const user = await User.findByPk(req.params.id);
             if (user) {
                 res.status(200).json(user);
             } else {
-                res.status(404).json({ message: 'User not found' });
+                next(new Error('User not found'));
             }
         } catch (error) {
             res.status(500).json({ message: 'Unable to get user' });
